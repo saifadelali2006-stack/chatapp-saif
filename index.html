@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ChatApp Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="auth-screen" class="screen active">
+        <div class="auth-card">
+            <div class="logo">💬 ChatPro</div>
+            <h2>تسجيل الدخول</h2>
+            <div id="email-auth">
+                <input type="email" id="email" placeholder="البريد الإلكتروني">
+                <input type="password" id="password" placeholder="كلمة المرور">
+                <button id="login-btn">تسجيل الدخول</button>
+                <button id="signup-btn" style="background:#30363d;">إنشاء حساب جديد</button>
+            </div>
+            <div id="auth-error" style="color:red; margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <!-- الشاشة الرئيسية -->
+    <div id="main-screen" class="screen">
+        <header class="main-header">
+            <h1>ChatApp Pro</h1>
+            <div class="user-info">
+                <span id="user-display"></span>
+                <button id="settings-btn">⚙️</button>
+                <button id="logout-btn">🚪</button>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab active" data-tab="chats">💬 المحادثات</button>
+            <button class="tab" data-tab="groups">👥 المجموعات</button>
+            <button class="tab" data-tab="status">📢 الحالات</button>
+            <button class="tab" data-tab="calls">📞 المكالمات</button>
+        </nav>
+
+        <main class="main-content">
+            <section id="tab-chats" class="tab-content active">
+                <div class="chat-list" id="chat-list"></div>
+                <button class="fab" id="add-chat-btn">➕</button>
+                <button class="fab" id="pick-contact-btn" style="bottom:100px; right:30px;">📇</button>
+                <div class="modal" id="new-chat-modal">
+                    <input type="text" id="new-chat-phone" placeholder="رقم هاتف الشخص الآخر (مع رمز الدولة)">
+                    <button id="start-chat-btn">بدء المحادثة</button>
+                    <button class="close-modal">إلغاء</button>
+                </div>
+            </section>
+
+            <section id="tab-groups" class="tab-content">
+                <div class="chat-list" id="group-list"></div>
+                <button class="fab" id="create-group-btn">➕</button>
+                <div class="modal" id="create-group-modal">
+                    <input type="text" id="group-name" placeholder="اسم المجموعة">
+                    <textarea id="group-members" placeholder="أرقام الهواتف مفصولة بفاصلة (+967...)"
+                        rows="2"></textarea>
+                    <button id="create-group-submit">إنشاء</button>
+                    <button class="close-modal">إلغاء</button>
+                </div>
+            </section>
+
+            <section id="tab-status" class="tab-content">
+                <button class="fab" id="add-status-btn">➕</button>
+                <input type="file" id="status-file-input" accept="image/*,video/*" style="display:none;">
+                <div class="statuses-list" id="statuses-list"></div>
+            </section>
+
+            <section id="tab-calls" class="tab-content">
+                <p>لبدء مكالمة، افتح محادثة واضغط على أيقونة المكالمة.</p>
+            </section>
+        </main>
+    </div>
+
+    <!-- شاشة المحادثة -->
+    <div id="chat-screen" class="screen">
+        <div class="chat-header">
+            <button id="back-btn">⬅️</button>
+            <span id="chat-partner-name"></span>
+            <button id="call-btn">📞</button>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="اكتب رسالة...">
+            <input type="file" id="media-input" accept="image/*,video/*" style="display:none">
+            <button id="attach-btn">📎</button>
+            <button id="send-btn">📤</button>
+        </div>
+    </div>
+
+    <!-- شاشة الإعدادات -->
+    <div id="settings-screen" class="screen">
+        <div class="settings-header">
+            <button id="settings-back">⬅️ رجوع</button>
+            <h2>الإعدادات</h2>
+        </div>
+        <div class="settings-body">
+            <div class="profile-pic-section">
+                <img id="profile-pic" src="" style="width:100px; height:100px; border-radius:50%; object-fit:cover;">
+                <input type="file" id="profile-pic-input" accept="image/*" style="display:none;">
+                <button id="change-pic-btn">تغيير الصورة</button>
+            </div>
+            <input type="text" id="settings-name" placeholder="الاسم الكامل">
+            <input type="text" id="settings-phone" placeholder="رقم الهاتف (مثال: +967700000000)">
+            <input type="text" id="settings-status" placeholder="الحالة (اقتباس)">
+            <button id="save-settings">حفظ التغييرات</button>
+        </div>
+    </div>
+
+    <!-- مودال عرض الحالة -->
+    <div id="status-view-modal" class="modal">
+        <span class="close-status-view">&times;</span>
+        <div id="status-view-content"></div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
+        }
+    </script>
+</body>
+
+</html>

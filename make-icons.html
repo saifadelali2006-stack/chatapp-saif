@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <canvas id="c" width="512" height="512" style="display:none"></canvas>
+    <a id="download192" style="display:block; margin:20px;">تحميل أيقونة 192</a>
+    <a id="download512" style="display:block; margin:20px;">تحميل أيقونة 512</a>
+    <script>
+        function drawIcon(size) {
+            const canvas = document.getElementById('c');
+            canvas.width = size; canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#075e54';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = 'white';
+            ctx.font = `${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('💬', size / 2, size / 2);
+            return canvas.toDataURL('image/png');
+        }
+        document.getElementById('download192').href = drawIcon(192);
+        document.getElementById('download192').download = 'icon-192.png';
+        document.getElementById('download512').href = drawIcon(512);
+        document.getElementById('download512').download = 'icon-512.png';
+    </script>
+</body>
+
+</html>
